@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070910">
+  <meta name="description" content="Free offline LED effect studio. Build animated RGB programs on your phone and export OJLED .bin or .json files.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rohitprajapati487.github.io/openled-studio/">
+  <meta property="og:title" content="OpenLED Studio">
+  <meta property="og:description" content="Free offline LED effect studio for phone-based RGB program design.">
+  <meta name="twitter:card" content="summary">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>OpenLED Studio</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <span class="hero-noise" aria-hidden="true"></span>
+      <div class="brand-row">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div>
+            <span class="kicker">PIXEL LAB / OFFLINE</span>
+            <h1>OpenLED <em>Studio</em></h1>
+          </div>
+        </div>
+        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.19</span>
+      </div>
+      <p class="tagline">Build a program on your phone and send it to the controller over USB.</p>
+      <div class="chips" aria-label="App features">
+        <span><b>42</b> Effects</span>
+        <span><b>8</b> Colors</span>
+        <span><b>Z/S</b> Mapping</span>
+        <span><b>0</b> Login</span>
+      </div>
+      <div class="hero-rail"><span>SESSION / LOCAL</span><span>NO CLOUD · NO LOGIN</span></div>
+    </header>
+
+    <section class="telemetry" aria-label="Live program stats">
+      <div class="stat"><span>Effect</span><strong id="statEffect">Rainbow</strong></div>
+      <div class="stat"><span>LEDs</span><strong id="statLeds">60</strong></div>
+      <div class="stat"><span>Frames</span><strong id="statFrames">300</strong></div>
+      <div class="stat"><span>Memory</span><strong id="statMemory">54.0 KB</strong></div>
+    </section>
+    <div class="signal-line" aria-hidden="true"><i></i></div>
+
+    <section class="card preview-card">
+      <div class="console-label"><span>LIVE OUTPUT</span><span>RGB · OJLED</span></div>
+      <div class="screen">
+        <canvas id="preview" width="960" height="260"></canvas>
+        <span class="scan" aria-hidden="true"></span>
+      </div>
+      <div class="preview-foot">
+        <span id="previewInfo">Preview is idle</span>
+        <span id="frameInfo">0 / 0</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <span class="section-index">01</span>
+        <h2>Control Deck</h2>
+        <span class="section-tag">LED SETUP</span>
+      </div>
+      <div class="grid">
+        <label>LED count
+          <input id="leds" type="number" min="1" max="1024" step="1" value="60" inputmode="numeric">
+        </label>
+        <label>FPS
+          <input id="fps" type="number" min="1" max="60" value="30" inputmode="numeric">
+        </label>
+        <label>Duration (sec)
+          <input id="seconds" type="number" min="1" max="120" value="10" inputmode="numeric">
+        </label>
+        <p id="sizeInfo" class="note">Estimated program size: 0 B. Maximum 1024 LEDs, with Grid up to 64 × 64.</p>
+        <label>Effect
+          <select id="effect">
+            <option value="STATIC">Static</option>
+            <option value="RAINBOW" selected>Rainbow</option>
+            <option value="CHASE">Chase</option>
+            <option value="BREATHE">Breathe</option>
+            <option value="WIPE">Color Wipe</option>
+            <option value="SPARKLE">Sparkle</option>
+            <option value="WAVE">Wave</option>
+            <option value="METEOR">Meteor</option>
+            <option value="FIRE">Fire</option>
+            <option value="PLASMA">Plasma</option>
+            <option value="RIPPLE">Ripple</option>
+            <option value="SCANNER">Scanner</option>
+            <option value="KALEIDO">Kaleido</option>
+            <option value="MATRIX">Matrix</option>
+            <option value="AURORA">Aurora</option>
+            <option value="LAVA">Lava</option>
+            <option value="STROBE">Strobe</option>
+            <option value="SPIRAL">Spiral</option>
+            <option value="SNOW">Snow</option>
+            <option value="CIRCUIT">Circuit</option>
+            <option value="SUNRISE">Sunrise</option>
+            <option value="THUNDER">Thunder</option>
+            <option value="NEON">Neon</option>
+            <option value="BOUNCE">Bounce</option>
+            <option value="COMET">Comet</option>
+            <option value="WATER">Water</option>
+            <option value="SMOKE">Smoke</option>
+            <option value="RADAR">Radar</option>
+            <option value="GRIDWAVE">Gridwave</option>
+            <option value="LASER">Laser</option>
+            <option value="CLOCK">Clock</option>
+            <option value="HEARTBEAT">Heartbeat</option>
+            <option value="WIND">Wind</option>
+            <option value="VOLCANO">Volcano</option>
+            <option value="BUBBLES">Bubbles</option>
+            <option value="CHECKER">Checker</option>
+            <option value="ZOOM">Zoom</option>
+            <option value="DNA">DNA</option>
+            <option value="FLAG">Flag</option>
+            <option value="GALAXY">Galaxy</option>
+            <option value="TRAFFIC">Traffic</option>
+            <option value="TEXT3D">3D Name (running text)</option>
+            <option value="CUSTOM">Custom (your own effect)</option>
+          </select>
+        </label>
+        <label id="textField" class="hidden">3D Name / Text
+          <input id="effectText" type="text" maxlength="24" value="OPENLED" spellcheck="false" autocapitalize="characters" autocomplete="off">
+        </label>
+        <label id="textDirField" class="hidden">Text direction
+          <select id="textDir">
+            <option value="RIGHT_LEFT">Right → Left</option>
+            <option value="LEFT_RIGHT">Left → Right</option>
+            <option value="TOP_BOTTOM">Top → Bottom</option>
+            <option value="BOTTOM_TOP">Bottom → Top</option>
+          </select>
+        </label>
+        <label id="textOffsetXField" class="hidden">X position
+          <input id="textOffsetX" type="range" min="-32" max="32" value="0">
+        </label>
+        <label id="textOffsetYField" class="hidden">Y position
+          <input id="textOffsetY" type="range" min="-32" max="32" value="0">
+        </label>
+        <p id="textHint" class="hidden note">A-Z, 0-9, space and . ! ? : - are supported. Use direction and X/Y position to place the text anywhere. For full 3D, keep Rows 7+ for horizontal and Columns 7+ for vertical.</p>
+        <label>Strip layout
+          <select id="layout">
+            <option value="LINE">Straight (1D)</option>
+            <option value="ZIGZAG_Z">Z Shape</option>
+            <option value="SNAKE_S">S Shape</option>
+            <option value="GRID">Grid</option>
+          </select>
+        </label>
+        <label id="colsField" class="hidden">Columns
+          <input id="cols" type="number" min="1" max="64" step="1" value="10" inputmode="numeric">
+        </label>
+        <label id="rowsField" class="hidden">Rows
+          <input id="rows" type="number" min="1" max="64" step="1" value="8" inputmode="numeric">
+        </label>
+        <label>Color A
+          <input id="colorA" type="color" value="#33c8ff">
+        </label>
+        <label>Color B
+          <input id="colorB" type="color" value="#ff52c4">
+        </label>
+        <label>Color C
+          <input id="colorC" type="color" value="#ffd240">
+        </label>
+        <label>Color D
+          <input id="colorD" type="color" value="#60ffa6">
+        </label>
+        <label>Color E
+          <input id="colorE" type="color" value="#ff8a3d">
+        </label>
+        <label>Color F
+          <input id="colorF" type="color" value="#9d6bff">
+        </label>
+        <label>Color G
+          <input id="colorG" type="color" value="#00ffd5">
+        </label>
+        <label>Color H
+          <input id="colorH" type="color" value="#ffffff">
+        </label>
+        <label id="customField" class="hidden">Custom formula
+          <textarea id="customCode" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off">palette([a,b,c,d,e,f,g,h], x + y*0.35 - t*0.12)</textarea>
+        </label>
+        <div id="customPresets" class="hidden preset-row">
+          <button type="button" data-preset="0">Rainbow</button>
+          <button type="button" data-preset="1">Pulse</button>
+          <button type="button" data-preset="2">Spark</button>
+          <button type="button" data-preset="3">DIY</button>
+        </div>
+        <p id="customHint" class="hidden note">Variables: i, x, y, n, t, frame, fps, a, b, c, d, e, f, g, h. Helpers: sin, cos, abs, min, max, floor, sqrt, mix(a,b,v), palette(colors,p), hsv(h,s,v), random(). Output [r,g,b] or a 0-255 number.</p>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-head">
+          <label for="speed">Speed</label>
+          <output id="speedOut">1.00x</output>
+        </div>
+        <input id="speed" type="range" min="10" max="500" value="100">
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-head">
+          <label for="brightness">Brightness</label>
+          <output id="brightnessOut">210</output>
+        </div>
+        <input id="brightness" type="range" min="0" max="255" value="210">
+      </div>
+
+      <div class="actions">
+        <button id="previewBtn" class="primary" type="button">Preview</button>
+        <button id="binBtn" type="button">Export .bin</button>
+        <button id="jsonBtn" type="button">Export .json</button>
+        <a id="firmwareLink" class="ghost" href="firmware/esp32_ws2812b.ino" download>ESP32 firmware</a>
+      </div>
+
+      <p id="status" class="status" role="status">Ready. Build an effect and export it.</p>
+    </section>
+
+    <section class="card help">
+      <div class="section-head">
+        <span class="section-index">02</span>
+        <h2>Field Guide</h2>
+        <span class="section-tag">HOW TO USE</span>
+      </div>
+      <ol>
+        <li>Choose an effect and settings. For Z/S Shape, fill in Columns and Rows, then preview.</li>
+        <li><b>Export .bin</b> saves the file to Downloads/OpenLED.</li>
+        <li>Copy the file to the controller over USB or upload it to SPIFFS.</li>
+        <li>Use the provided firmware example for ESP32/WS2812B.</li>
+      </ol>
+      <p class="note">Every RGB controller uses a different format. This app exports a universal raw-RGB (.bin) and a readable (.json) program; your controller needs a small parser for that format.</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
