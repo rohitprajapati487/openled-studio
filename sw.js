@@ -1,4 +1,4 @@
-const CACHE = "openled-web-v27";
+const CACHE = "openled-web-v28";
 const ASSETS = [
   "./",
   "./index.html",
