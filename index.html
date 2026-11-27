@@ -24,10 +24,10 @@
   <meta name="twitter:image" content="https://rohitprajapati487.github.io/openled-studio/icons/icon-512.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="manifest.webmanifest?v=34">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=34">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,7 +60,7 @@
             <h1>OpenLED <em>Studio</em></h1>
           </div>
         </div>
-        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.26</span>
+        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.27</span>
       </div>
       <p class="tagline">Build a program on your phone and send it to the controller over USB.</p>
       <div class="chips" aria-label="App features">
@@ -215,7 +215,6 @@
             <label id="swatchH" class="wheel-segment" data-letter="H" title="Color H" aria-label="Color H" style="--x:26%;--y:26%;--ink:#07111c">
               <input id="colorH" type="color" value="#ffffff" aria-label="Color H">
             </label>
-            <div class="wheel-center"><span>COLORS</span></div>
           </div>
         </div>
         <label id="customField" class="hidden">Custom formula
@@ -271,6 +270,6 @@
       <p class="note">Every RGB controller uses a different format. This app exports a universal raw-RGB (.bin) and a readable (.json) program; your controller needs a small parser for that format.</p>
     </section>
   </main>
-  <script src="app.js"></script>
+  <script src="app.js?v=34"></script>
 </body>
 </html>
