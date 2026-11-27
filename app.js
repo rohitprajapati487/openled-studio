@@ -945,6 +945,18 @@ colorsToggle.addEventListener("click", () => {
 });
 updateColorsToggle();
 
+const SWATCH_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+function syncColorSwatches() {
+  for (const letter of SWATCH_LETTERS) {
+    $(`swatch${letter}`).style.setProperty("--swatch", $(`color${letter}`).value);
+  }
+}
+for (const letter of SWATCH_LETTERS) {
+  $(`color${letter}`).addEventListener("input", syncColorSwatches);
+  $(`color${letter}`).addEventListener("change", syncColorSwatches);
+}
+syncColorSwatches();
+
 document.querySelectorAll("[data-preset]").forEach((button) => {
   button.addEventListener("click", () => {
     $("customCode").value = CUSTOM_PRESETS[Number(button.dataset.preset)];

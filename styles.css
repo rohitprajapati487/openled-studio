@@ -532,37 +532,55 @@ textarea:focus {
 
 .color-grid {
   grid-column: 1 / -1;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, 46px);
+  justify-content: center;
+  gap: 14px;
+  padding: 6px 0 2px;
 }
 
-.color-grid label {
-  align-items: center;
-  font-size: 12px;
-}
-
-.color-grid input[type="color"] {
-  width: 42px;
-  height: 42px;
-  min-height: 42px;
-  padding: 0;
+.color-chip {
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 46px;
+  min-height: 0;
+  border: 2px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
+  background: var(--swatch, #222);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   cursor: pointer;
+  transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
 }
 
-.color-grid input[type="color"]::-webkit-color-swatch-wrapper {
+.color-chip::after {
+  content: attr(data-letter);
+  position: absolute;
+  right: 3px;
+  bottom: 1px;
+  color: #fff;
+  font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-shadow: 0 1px 2px #000, 0 -1px 2px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+.color-chip:hover,
+.color-chip:focus-within {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(53, 214, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+
+.color-chip input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   padding: 0;
-}
-
-.color-grid input[type="color"]::-webkit-color-swatch {
   border: 0;
-  border-radius: 50%;
-}
-
-.color-grid input[type="color"]::-moz-color-swatch {
-  border: 0;
-  border-radius: 50%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 input[type="range"] {
