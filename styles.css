@@ -52,9 +52,7 @@ body::after {
   top: 32vh;
   pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(53, 214, 255, 0.16), rgba(255, 95, 200, 0.08) 48%, transparent 72%);
-  filter: blur(12px);
-  animation: drift 22s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(53, 214, 255, 0.12), rgba(255, 95, 200, 0.06) 48%, transparent 72%);
 }
 
 .app {
@@ -86,8 +84,7 @@ body::after {
   right: -60px;
   top: -70px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 95, 200, 0.28), transparent 68%);
-  filter: blur(6px);
+  background: radial-gradient(circle, rgba(255, 95, 200, 0.2), transparent 68%);
 }
 
 .hero-noise {
@@ -443,8 +440,7 @@ p {
   width: 34%;
   pointer-events: none;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgba(53, 214, 255, 0.16), transparent);
-  filter: blur(3px);
+  background: linear-gradient(90deg, transparent, rgba(53, 214, 255, 0.12), transparent);
   animation: sweep 8s ease-in-out infinite;
 }
 
@@ -741,8 +737,16 @@ button.primary {
 }
 
 @media (max-width: 620px) {
-  body::after {
+  body::after,
+  .screen::after {
     display: none;
+  }
+
+  .hero::after,
+  .signal-line i,
+  .mark i,
+  .live-dot {
+    animation: none;
   }
 
   .app {
