@@ -946,6 +946,7 @@ colorsToggle.addEventListener("click", () => {
 updateColorsToggle();
 
 const SWATCH_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const colorWheel = $("colorWheel");
 function swatchInk(hex) {
   const value = hex.replace("#", "");
   const r = parseInt(value.slice(0, 2), 16);
@@ -954,12 +955,11 @@ function swatchInk(hex) {
   return r * 0.2126 + g * 0.7152 + b * 0.0722 > 150 ? "#07111c" : "#ffffff";
 }
 function syncColorSwatches() {
-  for (const letter of SWATCH_LETTERS) {
+  SWATCH_LETTERS.forEach((letter, index) => {
     const value = $(`color${letter}`).value;
-    const swatch = $(`swatch${letter}`).style;
-    swatch.setProperty("--swatch", value);
-    swatch.setProperty("--ink", swatchInk(value));
-  }
+    colorWheel.style.setProperty(`--c${index}`, value);
+    $(`swatch${letter}`).style.setProperty("--ink", swatchInk(value));
+  });
 }
 for (const letter of SWATCH_LETTERS) {
   $(`color${letter}`).addEventListener("input", syncColorSwatches);

@@ -60,7 +60,7 @@
             <h1>OpenLED <em>Studio</em></h1>
           </div>
         </div>
-        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.25</span>
+        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.26</span>
       </div>
       <p class="tagline">Build a program on your phone and send it to the controller over USB.</p>
       <div class="chips" aria-label="App features">
@@ -189,31 +189,34 @@
           <input id="rows" type="number" min="1" max="64" step="1" value="8" inputmode="numeric">
         </label>
         <button id="colorsToggle" class="colors-toggle" type="button" aria-controls="colorFields" aria-expanded="true">Hide colors</button>
-        <div id="colorFields" class="grid color-grid">
-          <label id="swatchA" class="color-chip" data-letter="A" title="Color A" aria-label="Color A" style="--swatch:#33c8ff">
-            <input id="colorA" type="color" value="#33c8ff" aria-label="Color A">
-          </label>
-          <label id="swatchB" class="color-chip" data-letter="B" title="Color B" aria-label="Color B" style="--swatch:#ff52c4">
-            <input id="colorB" type="color" value="#ff52c4" aria-label="Color B">
-          </label>
-          <label id="swatchC" class="color-chip" data-letter="C" title="Color C" aria-label="Color C" style="--swatch:#ffd240">
-            <input id="colorC" type="color" value="#ffd240" aria-label="Color C">
-          </label>
-          <label id="swatchD" class="color-chip" data-letter="D" title="Color D" aria-label="Color D" style="--swatch:#60ffa6">
-            <input id="colorD" type="color" value="#60ffa6" aria-label="Color D">
-          </label>
-          <label id="swatchE" class="color-chip" data-letter="E" title="Color E" aria-label="Color E" style="--swatch:#ff8a3d">
-            <input id="colorE" type="color" value="#ff8a3d" aria-label="Color E">
-          </label>
-          <label id="swatchF" class="color-chip" data-letter="F" title="Color F" aria-label="Color F" style="--swatch:#9d6bff">
-            <input id="colorF" type="color" value="#9d6bff" aria-label="Color F">
-          </label>
-          <label id="swatchG" class="color-chip" data-letter="G" title="Color G" aria-label="Color G" style="--swatch:#00ffd5">
-            <input id="colorG" type="color" value="#00ffd5" aria-label="Color G">
-          </label>
-          <label id="swatchH" class="color-chip" data-letter="H" title="Color H" aria-label="Color H" style="--swatch:#ffffff">
-            <input id="colorH" type="color" value="#ffffff" aria-label="Color H">
-          </label>
+        <div id="colorFields" class="color-wheel-wrap">
+          <div id="colorWheel" class="color-wheel" role="group" aria-label="Colors A to H">
+            <label id="swatchA" class="wheel-segment" data-letter="A" title="Color A" aria-label="Color A" style="--x:50%;--y:16%;--ink:#07111c">
+              <input id="colorA" type="color" value="#33c8ff" aria-label="Color A">
+            </label>
+            <label id="swatchB" class="wheel-segment" data-letter="B" title="Color B" aria-label="Color B" style="--x:74%;--y:26%;--ink:#fff">
+              <input id="colorB" type="color" value="#ff52c4" aria-label="Color B">
+            </label>
+            <label id="swatchC" class="wheel-segment" data-letter="C" title="Color C" aria-label="Color C" style="--x:84%;--y:50%;--ink:#07111c">
+              <input id="colorC" type="color" value="#ffd240" aria-label="Color C">
+            </label>
+            <label id="swatchD" class="wheel-segment" data-letter="D" title="Color D" aria-label="Color D" style="--x:74%;--y:74%;--ink:#07111c">
+              <input id="colorD" type="color" value="#60ffa6" aria-label="Color D">
+            </label>
+            <label id="swatchE" class="wheel-segment" data-letter="E" title="Color E" aria-label="Color E" style="--x:50%;--y:84%;--ink:#07111c">
+              <input id="colorE" type="color" value="#ff8a3d" aria-label="Color E">
+            </label>
+            <label id="swatchF" class="wheel-segment" data-letter="F" title="Color F" aria-label="Color F" style="--x:26%;--y:74%;--ink:#fff">
+              <input id="colorF" type="color" value="#9d6bff" aria-label="Color F">
+            </label>
+            <label id="swatchG" class="wheel-segment" data-letter="G" title="Color G" aria-label="Color G" style="--x:16%;--y:50%;--ink:#07111c">
+              <input id="colorG" type="color" value="#00ffd5" aria-label="Color G">
+            </label>
+            <label id="swatchH" class="wheel-segment" data-letter="H" title="Color H" aria-label="Color H" style="--x:26%;--y:26%;--ink:#07111c">
+              <input id="colorH" type="color" value="#ffffff" aria-label="Color H">
+            </label>
+            <div class="wheel-center"><span>COLORS</span></div>
+          </div>
         </div>
         <label id="customField" class="hidden">Custom formula
           <textarea id="customCode" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off">palette([a,b,c,d,e,f,g,h], x + y*0.35 - t*0.12)</textarea>
