@@ -946,9 +946,19 @@ colorsToggle.addEventListener("click", () => {
 updateColorsToggle();
 
 const SWATCH_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+function swatchInk(hex) {
+  const value = hex.replace("#", "");
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return r * 0.2126 + g * 0.7152 + b * 0.0722 > 150 ? "#07111c" : "#ffffff";
+}
 function syncColorSwatches() {
   for (const letter of SWATCH_LETTERS) {
-    $(`swatch${letter}`).style.setProperty("--swatch", $(`color${letter}`).value);
+    const value = $(`color${letter}`).value;
+    const swatch = $(`swatch${letter}`).style;
+    swatch.setProperty("--swatch", value);
+    swatch.setProperty("--ink", swatchInk(value));
   }
 }
 for (const letter of SWATCH_LETTERS) {
