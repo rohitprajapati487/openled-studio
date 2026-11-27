@@ -68,9 +68,9 @@ body::after {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 20px 20px 18px;
+  padding: 14px 14px 12px;
   border: 1px solid rgba(53, 214, 255, 0.28);
-  border-radius: 26px;
+  border-radius: 20px;
   background:
     linear-gradient(135deg, rgba(53, 214, 255, 0.12), transparent 42%),
     linear-gradient(315deg, rgba(255, 95, 200, 0.12), transparent 44%),
@@ -81,10 +81,10 @@ body::after {
 .hero::after {
   content: "";
   position: absolute;
-  width: 240px;
-  height: 240px;
-  right: -90px;
-  top: -120px;
+  width: 160px;
+  height: 160px;
+  right: -60px;
+  top: -70px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 95, 200, 0.28), transparent 68%);
   filter: blur(6px);
@@ -116,48 +116,48 @@ body::after {
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .mark {
-  width: 46px;
-  height: 46px;
+  width: 38px;
+  height: 38px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
   border: 1px solid rgba(53, 214, 255, 0.4);
-  border-radius: 14px;
+  border-radius: 12px;
   background: linear-gradient(145deg, rgba(53, 214, 255, 0.16), rgba(255, 95, 200, 0.12));
   box-shadow: 0 0 24px rgba(53, 214, 255, 0.18);
 }
 
 .mark i {
-  width: 4px;
-  height: 16px;
+  width: 3px;
+  height: 12px;
   border-radius: 4px;
   background: linear-gradient(to top, var(--accent-2), var(--accent));
   animation: level 1.1s ease-in-out infinite alternate;
 }
 
-.mark i:nth-child(2) { animation-delay: 0.14s; height: 24px; }
-.mark i:nth-child(3) { animation-delay: 0.28s; height: 30px; }
-.mark i:nth-child(4) { animation-delay: 0.42s; height: 21px; }
-.mark i:nth-child(5) { animation-delay: 0.56s; height: 12px; }
+.mark i:nth-child(2) { animation-delay: 0.14s; height: 18px; }
+.mark i:nth-child(3) { animation-delay: 0.28s; height: 22px; }
+.mark i:nth-child(4) { animation-delay: 0.42s; height: 16px; }
+.mark i:nth-child(5) { animation-delay: 0.56s; height: 9px; }
 
 .kicker {
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   color: var(--accent);
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 800;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.18em;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(26px, 6vw, 40px);
+  font-size: clamp(21px, 5vw, 28px);
   font-weight: 850;
   letter-spacing: -0.045em;
   line-height: 1.02;
@@ -199,8 +199,8 @@ p {
 .tagline {
   position: relative;
   z-index: 1;
-  margin-top: 14px;
-  font-size: 14px;
+  margin-top: 9px;
+  font-size: 12px;
 }
 
 .badge {
@@ -209,20 +209,20 @@ p {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 11px;
+  gap: 5px;
+  padding: 5px 8px;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--accent);
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 750;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   background: rgba(8, 13, 21, 0.72);
 }
 
 .live-dot {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #5dffa6;
   box-shadow: 0 0 12px #5dffa6;
@@ -234,22 +234,22 @@ p {
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 5px;
+  margin-top: 10px;
 }
 
 .chips span {
-  padding: 7px 10px;
+  padding: 5px 8px;
   border: 1px solid rgba(112, 143, 184, 0.22);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(7, 11, 18, 0.58);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .chips b {
   color: var(--text);
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .hero-rail {
@@ -257,14 +257,14 @@ p {
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
-  padding-top: 11px;
+  gap: 10px;
+  margin-top: 9px;
+  padding-top: 8px;
   border-top: 1px dashed rgba(112, 143, 184, 0.22);
   color: rgba(159, 176, 200, 0.72);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
 }
 
 .telemetry {
@@ -750,23 +750,23 @@ button.primary {
   }
 
   .hero {
-    padding: 17px 15px 15px;
-    border-radius: 22px;
+    padding: 12px 12px 10px;
+    border-radius: 18px;
   }
 
   .brand {
-    gap: 11px;
+    gap: 8px;
   }
 
   .mark {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
   }
 
   .badge {
-    font-size: 10px;
-    padding: 6px 9px;
+    font-size: 8px;
+    padding: 4px 7px;
   }
 
   .chips span {
