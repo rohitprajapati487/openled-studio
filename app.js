@@ -932,6 +932,19 @@ function updateEffectFields() {
   }
 }
 
+const colorsToggle = $("colorsToggle");
+const colorFields = $("colorFields");
+function updateColorsToggle() {
+  const hidden = colorFields.classList.contains("hidden");
+  colorsToggle.textContent = hidden ? "Show colors" : "Hide colors";
+  colorsToggle.setAttribute("aria-expanded", hidden ? "false" : "true");
+}
+colorsToggle.addEventListener("click", () => {
+  colorFields.classList.toggle("hidden");
+  updateColorsToggle();
+});
+updateColorsToggle();
+
 document.querySelectorAll("[data-preset]").forEach((button) => {
   button.addEventListener("click", () => {
     $("customCode").value = CUSTOM_PRESETS[Number(button.dataset.preset)];

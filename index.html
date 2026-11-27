@@ -60,7 +60,7 @@
             <h1>OpenLED <em>Studio</em></h1>
           </div>
         </div>
-        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.21</span>
+        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.22</span>
       </div>
       <p class="tagline">Build a program on your phone and send it to the controller over USB.</p>
       <div class="chips" aria-label="App features">
@@ -188,30 +188,33 @@
         <label id="rowsField" class="hidden">Rows
           <input id="rows" type="number" min="1" max="64" step="1" value="8" inputmode="numeric">
         </label>
-        <label>Color A
-          <input id="colorA" type="color" value="#33c8ff">
-        </label>
-        <label>Color B
-          <input id="colorB" type="color" value="#ff52c4">
-        </label>
-        <label>Color C
-          <input id="colorC" type="color" value="#ffd240">
-        </label>
-        <label>Color D
-          <input id="colorD" type="color" value="#60ffa6">
-        </label>
-        <label>Color E
-          <input id="colorE" type="color" value="#ff8a3d">
-        </label>
-        <label>Color F
-          <input id="colorF" type="color" value="#9d6bff">
-        </label>
-        <label>Color G
-          <input id="colorG" type="color" value="#00ffd5">
-        </label>
-        <label>Color H
-          <input id="colorH" type="color" value="#ffffff">
-        </label>
+        <button id="colorsToggle" class="colors-toggle" type="button" aria-controls="colorFields" aria-expanded="true">Hide colors</button>
+        <div id="colorFields" class="grid color-grid">
+          <label>Color A
+            <input id="colorA" type="color" value="#33c8ff">
+          </label>
+          <label>Color B
+            <input id="colorB" type="color" value="#ff52c4">
+          </label>
+          <label>Color C
+            <input id="colorC" type="color" value="#ffd240">
+          </label>
+          <label>Color D
+            <input id="colorD" type="color" value="#60ffa6">
+          </label>
+          <label>Color E
+            <input id="colorE" type="color" value="#ff8a3d">
+          </label>
+          <label>Color F
+            <input id="colorF" type="color" value="#9d6bff">
+          </label>
+          <label>Color G
+            <input id="colorG" type="color" value="#00ffd5">
+          </label>
+          <label>Color H
+            <input id="colorH" type="color" value="#ffffff">
+          </label>
+        </div>
         <label id="customField" class="hidden">Custom formula
           <textarea id="customCode" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off">palette([a,b,c,d,e,f,g,h], x + y*0.35 - t*0.12)</textarea>
         </label>
