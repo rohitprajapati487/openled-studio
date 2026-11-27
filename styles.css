@@ -531,28 +531,60 @@ textarea:focus {
 }
 
 .color-grid {
+  position: relative;
+  display: block;
   grid-column: 1 / -1;
-  grid-template-columns: repeat(4, 52px);
-  justify-content: center;
-  gap: 12px;
-  padding: 8px 0 4px;
+  width: 184px;
+  height: 184px;
+  margin: 8px auto 4px;
+}
+
+.color-grid::before {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border: 1px dashed rgba(53, 214, 255, 0.35);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.color-grid::after {
+  content: "COLORS";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--muted);
+  font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.14em;
+  pointer-events: none;
 }
 
 .color-chip {
-  position: relative;
+  position: absolute;
   display: grid;
   place-items: center;
   width: 52px;
   height: 52px;
   min-height: 0;
+  transform: translate(-50%, -50%);
   border: 2px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
   background: var(--swatch, #222);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
+  transition: scale 0.16s, border-color 0.16s, box-shadow 0.16s;
 }
+
+.color-chip:nth-child(1) { left: 50%; top: 16%; }
+.color-chip:nth-child(2) { left: 74%; top: 26%; }
+.color-chip:nth-child(3) { left: 84%; top: 50%; }
+.color-chip:nth-child(4) { left: 74%; top: 74%; }
+.color-chip:nth-child(5) { left: 50%; top: 84%; }
+.color-chip:nth-child(6) { left: 26%; top: 74%; }
+.color-chip:nth-child(7) { left: 16%; top: 50%; }
+.color-chip:nth-child(8) { left: 26%; top: 26%; }
 
 .color-chip::after {
   content: attr(data-letter);
@@ -565,7 +597,7 @@ textarea:focus {
 
 .color-chip:hover,
 .color-chip:focus-within {
-  transform: translateY(-2px);
+  scale: 1.06;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(53, 214, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.4);
 }
