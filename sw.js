@@ -1,10 +1,10 @@
-const CACHE = "openled-web-v39";
+const CACHE = "openled-web-v40";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=39",
-  "./app.js?v=39",
-  "./manifest.webmanifest?v=39",
+  "./styles.css?v=40",
+  "./app.js?v=40",
+  "./manifest.webmanifest?v=40",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./firmware/esp32_ws2812b.ino"

@@ -24,10 +24,10 @@
   <meta name="twitter:image" content="https://rohitprajapati487.github.io/openled-studio/icons/icon-512.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="manifest.webmanifest?v=39">
+  <link rel="manifest" href="manifest.webmanifest?v=40">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=39">
+  <link rel="stylesheet" href="styles.css?v=40">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,7 +60,7 @@
             <h1>OpenLED <em>Studio</em></h1>
           </div>
         </div>
-        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.32</span>
+        <span class="badge"><i class="live-dot"></i> OJLED v1 · WEB v1.33</span>
       </div>
       <p class="tagline">Build a program on your phone and send it to the controller over USB.</p>
       <div class="chips" aria-label="App features">
@@ -153,6 +153,10 @@
             <option value="GALAXY">Galaxy</option>
             <option value="TRAFFIC">Traffic</option>
             <option value="TEXT3D">3D Name (running text)</option>
+            <option value="PIXEL3D">3D Pixel Art (draw your own)</option>
+            <option value="CUBE3D">3D Cube (rotating)</option>
+            <option value="TUNNEL3D">3D Tunnel (moving)</option>
+            <option value="SPHERE3D">3D Sphere (rotating)</option>
             <option value="CUSTOM">Custom (your own effect)</option>
           </select>
         </label>
@@ -167,13 +171,34 @@
             <option value="BOTTOM_TOP">Bottom → Top</option>
           </select>
         </label>
+        <label id="textDepthField" class="hidden">3D depth
+          <input id="textDepth" type="range" min="1" max="8" value="3">
+        </label>
+        <label id="textScaleField" class="hidden">Text size
+          <input id="textScale" type="range" min="1" max="3" value="1">
+        </label>
+        <label id="textSpacingField" class="hidden">Letter spacing
+          <input id="textSpacing" type="range" min="0" max="3" value="1">
+        </label>
         <label id="textOffsetXField" class="hidden">X position
           <input id="textOffsetX" type="range" min="-32" max="32" value="0">
         </label>
         <label id="textOffsetYField" class="hidden">Y position
           <input id="textOffsetY" type="range" min="-32" max="32" value="0">
         </label>
-        <p id="textHint" class="hidden note">A-Z, 0-9, space and . ! ? : - are supported. Use direction and X/Y position to place the text anywhere. For full 3D, keep Rows 7+ for horizontal and Columns 7+ for vertical.</p>
+        <p id="textHint" class="hidden note">A-Z, 0-9, space and . ! ? : - are supported. Use direction, X/Y position, depth and size to build the 3D text you want. For full depth, keep Rows 7+ for horizontal and Columns 7+ for vertical.</p>
+        <div id="pixelField" class="hidden pixel-wrap">
+          <div class="pixel-head">
+            <span>3D PIXEL ART</span>
+            <span class="pixel-actions">
+              <button id="pixelClear" type="button">Clear</button>
+              <button id="pixelSample" type="button">Sample</button>
+            </span>
+          </div>
+          <div id="pixelEditor" class="pixel-editor" role="grid" aria-label="3D pixel art editor"></div>
+          <input id="pixelPattern" type="hidden" value="">
+          <p class="note">Tap or drag cells to draw. Your art is extruded into 3D and exported with the program.</p>
+        </div>
         <label>Strip layout
           <select id="layout">
             <option value="LINE">Straight (1D)</option>
@@ -270,6 +295,6 @@
       <p class="note">Every RGB controller uses a different format. This app exports a universal raw-RGB (.bin) and a readable (.json) program; your controller needs a small parser for that format.</p>
     </section>
   </main>
-  <script src="app.js?v=39"></script>
+  <script src="app.js?v=40"></script>
 </body>
 </html>

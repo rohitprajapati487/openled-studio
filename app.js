@@ -176,6 +176,114 @@ function glyphColumn(text, gx) {
   return false;
 }
 
+const PIXEL_W = 12;
+const PIXEL_H = 8;
+const DEFAULT_PIXEL_PATTERN = [
+  "..##....##..",
+  ".####..####.",
+  "############",
+  "############",
+  ".##########.",
+  "..########..",
+  "...######...",
+  "....####...."
+].join("");
+const CUBE_VERTICES = [
+  [-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1],
+  [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1]
+];
+const CUBE_EDGES = [
+  [0, 1], [0, 2], [0, 4], [1, 3], [1, 5], [2, 3],
+  [2, 6], [3, 7], [4, 5], [4, 6], [5, 7], [6, 7]
+];
+let cubeProjectionCache = null;
+
+function glyphPixelScaled(text, gx, gy, scale, spacing) {
+  if (gx < 0 || gy < 0) {
+    return false;
+  }
+  const step = scale * 5 + spacing;
+  const index = Math.floor(gx / step);
+  if (index >= text.length) {
+    return false;
+  }
+  const localX = gx - index * step;
+  if (localX >= scale * 5) {
+    return false;
+  }
+  const col = Math.floor(localX / scale);
+  const row = Math.floor(gy / scale);
+  if (row > 6) {
+    return false;
+  }
+  const rows = FONT_5X7[text[index]];
+  return Boolean(rows && rows[row][col] === "1");
+}
+
+function glyphColumnScaled(text, gx, scale, spacing) {
+  for (let gy = 0; gy < scale * 7; gy++) {
+    if (glyphPixelScaled(text, gx, gy, scale, spacing)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function glyphWidth(text, scale, spacing) {
+  return Math.max(1, text.length * (scale * 5 + spacing) - spacing);
+}
+
+function pixelPatternAt(pattern, x, y) {
+  if (x < 0 || x >= PIXEL_W || y < 0 || y >= PIXEL_H) {
+    return false;
+  }
+  return pattern[y * PIXEL_W + x] === "1";
+}
+
+function pixelColumnAt(pattern, x) {
+  for (let y = 0; y < PIXEL_H; y++) {
+    if (pixelPatternAt(pattern, x, y)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function distanceToSegment(px, py, ax, ay, bx, by) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const lengthSq = dx * dx + dy * dy;
+  const t = lengthSq === 0 ? 0 : clamp(((px - ax) * dx + (py - ay) * dy) / lengthSq, 0, 1);
+  return Math.hypot(px - (ax + dx * t), py - (ay + dy * t));
+}
+
+function projectedCube(t, cols, rows) {
+  const key = `${Math.floor(t * 1000)}:${cols}:${rows}`;
+  if (cubeProjectionCache && cubeProjectionCache.key === key) {
+    return cubeProjectionCache.points;
+  }
+  const ay = t * 0.7;
+  const ax = t * 0.43;
+  const cy = Math.cos(ay);
+  const sy = Math.sin(ay);
+  const cx = Math.cos(ax);
+  const sx = Math.sin(ax);
+  const points = CUBE_VERTICES.map(([x, y, z]) => {
+    const rx = x * cy - z * sy;
+    const rz = x * sy + z * cy;
+    const ry = y * cx - rz * sx;
+    const rz2 = y * sx + rz * cx;
+    const perspective = 2.8 / (2.8 - rz2);
+    return [
+      0.5 + rx * 0.36 * perspective,
+      0.5 + ry * 0.36 * perspective,
+      rz2
+    ];
+  });
+  cubeProjectionCache = { key, points };
+  return points;
+}
+
 const EXTRA_EFFECTS = {
   BOUNCE(v) {
     const p = fract(v.t * 0.35);
@@ -302,13 +410,17 @@ const EXTRA_EFFECTS = {
   },
   TEXT3D(v) {
     const text = v.text || "OPENLED";
-    const width = text.length * 6 - 1;
+    const scale = v.textScale || 1;
+    const spacing = Number.isFinite(v.textSpacing) ? v.textSpacing : 1;
+    const depthSize = v.textDepth || 3;
+    const width = glyphWidth(text, scale, spacing);
+    const height = scale * 7;
     const horizontal = v.textDir === "RIGHT_LEFT" || v.textDir === "LEFT_RIGHT";
     const forward = v.textDir === "LEFT_RIGHT" || v.textDir === "TOP_BOTTOM";
     const axis = horizontal
       ? v.col - v.textOffsetX
       : v.row - v.textOffsetY;
-    const depth = horizontal
+    const depthAxis = horizontal
       ? v.row - v.textOffsetY
       : v.col - v.textOffsetX;
     const axisCount = horizontal ? v.cols : v.rows;
@@ -318,23 +430,107 @@ const EXTRA_EFFECTS = {
     const gx = forward
       ? axis + shift - axisCount - 1
       : axis - shift + width + 1;
-    const gy = depth - Math.floor((depthCount - 7) / 2);
-    const flat = depthCount < 7;
-    const front = flat ? glyphColumn(text, gx) : glyphPixel(text, gx, gy);
-    const side = flat ? false : glyphPixel(text, gx - 1, gy + 1);
-    const top = flat ? false : glyphPixel(text, gx - 1, gy - 1);
-    const shine = 0.7 + 0.3 * Math.sin(v.t * 4 + v.col * 0.25);
+    const gy = depthAxis - Math.floor((depthCount - height) / 2);
+    const flat = depthCount < height;
+    const front = flat
+      ? glyphColumnScaled(text, gx, scale, spacing)
+      : glyphPixelScaled(text, gx, gy, scale, spacing);
+    const shine = 0.72 + 0.28 * Math.sin(v.t * 4 + v.col * 0.25);
     if (front) {
-      return palette(v.colors, gx / Math.max(1, width) + v.t * 0.04)
+      return palette(v.colors, gx / width + v.t * 0.04)
         .map((part) => part * shine);
     }
-    if (side) {
-      return v.colors[5].map((part) => part * 0.38);
-    }
-    if (top) {
-      return v.colors[4].map((part) => part * 0.55);
+    for (let layer = 1; layer <= depthSize; layer++) {
+      const side = flat ? false : glyphPixelScaled(text, gx + layer, gy - layer, scale, spacing);
+      const top = flat ? false : glyphPixelScaled(text, gx + layer, gy + layer, scale, spacing);
+      if (side) {
+        return v.colors[5].map((part) => part * Math.max(0.18, 0.5 - layer * 0.04));
+      }
+      if (top) {
+        return v.colors[4].map((part) => part * Math.max(0.24, 0.7 - layer * 0.06));
+      }
     }
     return [2, 4, 10];
+  },
+  PIXEL3D(v) {
+    const pattern = typeof v.pixelPattern === "string" && v.pixelPattern.length === PIXEL_W * PIXEL_H
+      ? v.pixelPattern
+      : DEFAULT_PIXEL_PATTERN;
+    const depthSize = v.textDepth || 3;
+    const cols = Math.max(1, v.cols);
+    const rows = Math.max(1, v.rows);
+    const ax = Math.floor(v.col * PIXEL_W / cols);
+    const ay = rows === 1 ? Math.floor(PIXEL_H / 2) : Math.floor(v.row * PIXEL_H / rows);
+    const front = rows === 1 ? pixelColumnAt(pattern, ax) : pixelPatternAt(pattern, ax, ay);
+    const shine = 0.74 + 0.26 * Math.sin(v.t * 3 + ax * 0.4);
+    if (front) {
+      return palette(v.colors, ax / PIXEL_W + ay / PIXEL_H * 0.3 + v.t * 0.04)
+        .map((part) => part * shine);
+    }
+    for (let layer = 1; layer <= depthSize; layer++) {
+      const sideX = ax + layer;
+      const sideY = rows === 1 ? ay : ay + layer;
+      const topY = ay - layer;
+      const side = rows === 1 ? pixelColumnAt(pattern, sideX) : pixelPatternAt(pattern, sideX, sideY);
+      const top = rows === 1 ? false : pixelPatternAt(pattern, sideX, topY);
+      if (side) {
+        return v.colors[5].map((part) => part * Math.max(0.2, 0.52 - layer * 0.04));
+      }
+      if (top) {
+        return v.colors[4].map((part) => part * Math.max(0.26, 0.72 - layer * 0.06));
+      }
+    }
+    return [1, 3, 7];
+  },
+  CUBE3D(v) {
+    const cols = Math.max(1, v.cols);
+    const rows = Math.max(1, v.rows);
+    const points = projectedCube(v.t, cols, rows);
+    let distance = Infinity;
+    let depth = 0;
+    for (const [start, end] of CUBE_EDGES) {
+      const a = points[start];
+      const b = points[end];
+      const current = distanceToSegment(v.x, v.y, a[0], a[1], b[0], b[1]);
+      if (current < distance) {
+        distance = current;
+        depth = (a[2] + b[2]) / 2;
+      }
+    }
+    const width = Math.max(0.045, 1.8 / Math.max(cols, rows));
+    const line = Math.pow(Math.max(0, 1 - distance / width), 1.7);
+    const glow = Math.max(0, 1 - distance / (width * 3)) * 0.18;
+    return palette(v.colors, depth * 0.12 + v.t * 0.04)
+      .map((part) => part * (line + glow + 0.035));
+  },
+  TUNNEL3D(v) {
+    const dx = (v.x - 0.5) * 2;
+    const dy = (v.y - 0.5) * 2;
+    const square = Math.max(Math.abs(dx), Math.abs(dy));
+    const ring = fract(square * 4 - v.t * 0.9);
+    const line = Math.pow(Math.max(0, 1 - Math.abs(ring - 0.5) * 9), 1.6);
+    const spokes = Math.pow(Math.abs(Math.sin(Math.atan2(dy, dx) * 8)), 16) * 0.35;
+    const intensity = Math.min(1, line + spokes * 0.18 + 0.035);
+    return palette(v.colors, square * 0.8 + v.t * 0.05)
+      .map((part) => part * intensity);
+  },
+  SPHERE3D(v) {
+    const dx = (v.x - 0.5) * 2;
+    const dy = (v.y - 0.5) * 2;
+    const radiusSq = dx * dx + dy * dy;
+    if (radiusSq > 1) {
+      return palette(v.colors, v.t * 0.05).map((part) => part * 0.03);
+    }
+    const z = Math.sqrt(1 - radiusSq);
+    const longitude = Math.atan2(dx, z) + v.t * 0.5;
+    const latitude = Math.asin(dy);
+    const lonLine = Math.pow(Math.max(0, 1 - Math.abs(Math.sin(longitude * 5)) * 10), 2);
+    const latLine = Math.pow(Math.max(0, 1 - Math.abs(Math.sin(latitude * 6)) * 10), 2);
+    const limb = Math.pow(radiusSq, 5) * 0.25;
+    const light = clamp(0.2 + 0.8 * (-dx * 0.3 - dy * 0.25 + z * 0.75), 0.15, 1);
+    const intensity = Math.min(1, (lonLine + latLine) * light + limb + 0.03);
+    return palette(v.colors, longitude / (2 * Math.PI) + latitude * 0.12 + v.t * 0.03)
+      .map((part) => part * intensity);
   }
 };
 
@@ -425,6 +621,11 @@ function readText(id) {
   return raw || "OPENLED";
 }
 
+function readPixelPattern() {
+  const raw = String($("pixelPattern").value || "").replace(/[^01]/g, "");
+  return raw.length === PIXEL_W * PIXEL_H ? raw : DEFAULT_PIXEL_PATTERN;
+}
+
 function readConfig() {
   const leds = intFrom("leds", "LED count", 1, 1024);
   const layout = $("layout").value;
@@ -456,8 +657,12 @@ function readConfig() {
     colorH: parseHex($("colorH").value),
     text: readText("effectText"),
     textDir: $("textDir").value,
+    textDepth: intFrom("textDepth", "3D depth", 1, 8),
+    textScale: intFrom("textScale", "Text size", 1, 3),
+    textSpacing: intFrom("textSpacing", "Letter spacing", 0, 3),
     textOffsetX: Number($("textOffsetX").value),
     textOffsetY: Number($("textOffsetY").value),
+    pixelPattern: readPixelPattern(),
     customCode: $("customCode").value,
     speed: Number($("speed").value) / 100,
     brightness: Number($("brightness").value)
@@ -665,8 +870,12 @@ function generateFrames(config, maxFrames = Infinity) {
           rows: config.layout === "LINE" ? 1 : config.rows,
           text: config.text,
           textDir: config.textDir,
+          textDepth: config.textDepth,
+          textScale: config.textScale,
+          textSpacing: config.textSpacing,
           textOffsetX: config.textOffsetX,
           textOffsetY: config.textOffsetY,
+          pixelPattern: config.pixelPattern,
           colors: paletteColors,
           random
         });
@@ -851,8 +1060,17 @@ function buildJson(config, frames) {
       ? {
           text: config.text,
           textDir: config.textDir,
+          textDepth: config.textDepth,
+          textScale: config.textScale,
+          textSpacing: config.textSpacing,
           textOffsetX: config.textOffsetX,
           textOffsetY: config.textOffsetY
+        }
+      : {}),
+    ...(config.effect === "PIXEL3D"
+      ? {
+          pixelPattern: config.pixelPattern,
+          textDepth: config.textDepth
         }
       : {}),
     ...(config.customCode ? { customCode: config.customCode } : {}),
@@ -916,8 +1134,11 @@ function updateLayoutFields() {
 }
 
 function updateEffectFields() {
-  const custom = $("effect").value === "CUSTOM";
-  const text = $("effect").value === "TEXT3D";
+  const effect = $("effect").value;
+  const custom = effect === "CUSTOM";
+  const text = effect === "TEXT3D";
+  const pixel = effect === "PIXEL3D";
+  const design3d = text || pixel;
   for (const id of ["customField", "customPresets", "customHint"]) {
     $(id).classList.toggle("hidden", !custom);
   }
@@ -930,7 +1151,79 @@ function updateEffectFields() {
   ]) {
     $(id).classList.toggle("hidden", !text);
   }
+  $("textDepthField").classList.toggle("hidden", !design3d);
+  $("textScaleField").classList.toggle("hidden", !text);
+  $("textSpacingField").classList.toggle("hidden", !text);
+  $("pixelField").classList.toggle("hidden", !pixel);
 }
+
+function renderPixelEditor() {
+  const pattern = readPixelPattern();
+  const cells = $("pixelEditor").children;
+  if (!cells || cells.length !== PIXEL_W * PIXEL_H) {
+    return;
+  }
+  for (let index = 0; index < cells.length; index++) {
+    const on = pattern[index] === "1";
+    cells[index].classList.toggle("on", on);
+    cells[index].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+function createPixelEditor() {
+  const editor = $("pixelEditor");
+  $("pixelPattern").value = readPixelPattern();
+  let painting = false;
+  let paintValue = 1;
+  function paint(cell) {
+    const index = Number(cell.dataset.index);
+    const pattern = $("pixelPattern").value;
+    const next = paintValue ? "1" : "0";
+    if (pattern[index] === next) {
+      return;
+    }
+    $("pixelPattern").value = pattern.slice(0, index) + next + pattern.slice(index + 1);
+    renderPixelEditor();
+    scheduleDesignPreview();
+  }
+  for (let y = 0; y < PIXEL_H; y++) {
+    for (let x = 0; x < PIXEL_W; x++) {
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "pixel-cell";
+      cell.dataset.index = String(y * PIXEL_W + x);
+      cell.setAttribute("role", "gridcell");
+      cell.setAttribute("aria-label", `Pixel ${x + 1}, ${y + 1}`);
+      cell.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        painting = true;
+        paintValue = $("pixelPattern").value[Number(cell.dataset.index)] === "1" ? 0 : 1;
+        paint(cell);
+      });
+      cell.addEventListener("pointerenter", () => {
+        if (painting) {
+          paint(cell);
+        }
+      });
+      editor.appendChild(cell);
+    }
+  }
+  document.addEventListener("pointerup", () => {
+    painting = false;
+  });
+  renderPixelEditor();
+}
+
+$("pixelClear").addEventListener("click", () => {
+  $("pixelPattern").value = "0".repeat(PIXEL_W * PIXEL_H);
+  renderPixelEditor();
+  scheduleDesignPreview();
+});
+$("pixelSample").addEventListener("click", () => {
+  $("pixelPattern").value = DEFAULT_PIXEL_PATTERN;
+  renderPixelEditor();
+  scheduleDesignPreview();
+});
 
 const colorsToggle = $("colorsToggle");
 const colorFields = $("colorFields");
@@ -1010,24 +1303,33 @@ for (const id of ["leds", "fps", "seconds"]) {
   $(id).addEventListener("input", updateSizeInfo);
   $(id).addEventListener("change", updateSizeInfo);
 }
-let nameInputTimer = null;
-function scheduleTextPreview() {
-  if ($("effect").value !== "TEXT3D") {
+let designPreviewTimer = null;
+function scheduleDesignPreview() {
+  const effect = $("effect").value;
+  if (effect !== "TEXT3D" && effect !== "PIXEL3D") {
     return;
   }
-  clearTimeout(nameInputTimer);
-  nameInputTimer = setTimeout(startPreview, 400);
+  clearTimeout(designPreviewTimer);
+  designPreviewTimer = setTimeout(startPreview, 400);
 }
-$("effectText").addEventListener("input", scheduleTextPreview);
-for (const id of ["textDir", "textOffsetX", "textOffsetY"]) {
-  $(id).addEventListener("input", scheduleTextPreview);
-  $(id).addEventListener("change", scheduleTextPreview);
+$("effectText").addEventListener("input", scheduleDesignPreview);
+for (const id of [
+  "textDir",
+  "textDepth",
+  "textScale",
+  "textSpacing",
+  "textOffsetX",
+  "textOffsetY"
+]) {
+  $(id).addEventListener("input", scheduleDesignPreview);
+  $(id).addEventListener("change", scheduleDesignPreview);
 }
 
 $("previewBtn").addEventListener("click", startPreview);
 $("binBtn").addEventListener("click", () => exportProgram(true));
 $("jsonBtn").addEventListener("click", () => exportProgram(false));
 
+createPixelEditor();
 updateLayoutFields();
 updateEffectFields();
 updateSizeInfo();
